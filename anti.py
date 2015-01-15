@@ -39,9 +39,9 @@ print list(anti_sentence('is'))
 
 if __name__ == '__main__':
     recognizer = speech.Recognizer()
-    recognizer.quiet_duration = 0.05
-
-    recognizer.pause_threshold = 0.1
+    recognizer.quiet_duration = 0.01
+    recognizer.energy_threshold = 50
+    recognizer.pause_threshold = 0.02
 
     while True:
         with speech.Microphone() as source:
@@ -52,7 +52,7 @@ if __name__ == '__main__':
             anti = ''.join(anti_sentence( recognized ))
             print recognized
             if recognized != anti:
-                os.system('say ' + anti)
+                os.system('say -v "Victoria" "' + anti + '"')
         except KeyError:
             print 'API key overused :('
         except LookupError: #can't recognize
