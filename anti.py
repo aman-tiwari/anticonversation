@@ -2,16 +2,19 @@ import nltk
 from nltk.corpus import wordnet as wn
 from itertools import chain
 from random import choice
+import speech_recognition as speech
+import os
 
 #Fixes some holes in the WordNet mapping
 custom_map = {'am':'am', 'create':'destroy', 'kill':'make_life', 'worship':'deface',
-                'are':'are', 'be':'be', "is":"isn't", 'i am':'i am not'}
+                'are':'are', 'be':'be', 'is':'is', 'i am':'i am not'}
 custom_map.update(reversed(i) for i in custom_map.items())
-
+print custom_map
+print custom_map['is']
 def anti_words(word):
     """Returns a list of antonym for the word"""
     if word in custom_map:
-        return custom_map[word]
+        return [custom_map[word], custom_map[word]]
     ant_bag = set([word])
     for syn in wn.synsets(word):
         try:
@@ -32,8 +35,25 @@ def anti_sentence(sentence):
     words = sentence.split()
     for word in words:
         yield choice(tuple(anti_words(word)))
+print list(anti_sentence('is'))
 
 if __name__ == '__main__':
+    recognizer = speech.Recognizer()
+    recognizer.quiet_duration = 0.05
+
+    recognizer.pause_threshold = 0.1
+
     while True:
-        sen = raw_input(' : ')
-        print ' '.join(list(anti_sentence(sen)))
+        with speech.Microphone() as source:
+            audio = recognizer.listen(source)
+        print 'recognizing'
+        try:
+            recognized = recognizer.recognize(audio)
+            anti = ''.join(anti_sentence( recognized ))
+            print recognized
+            if recognized != anti:
+                os.system('say ' + anti)
+        except KeyError:
+            print 'API key overused :('
+        except LookupError: #can't recognize
+            print 'what?'
