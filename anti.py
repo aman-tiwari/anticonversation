@@ -52,7 +52,7 @@ if __name__ == '__main__':
             anti = ''.join(anti_sentence( recognized ))
             print recognized
             if recognized != anti:
-                os.system('say -v "Victoria" "' + anti + '"')
+                os.system('say -v "Bad News" "' + anti + '"')
         except KeyError:
             print 'API key overused :('
         except LookupError: #can't recognize
