@@ -5,12 +5,12 @@ from random import choice
 import speech_recognition as speech
 import os
 
-#Fixes some holes in the WordNet mapping
+#Fixes some 'holes' in the WordNet mapping
 custom_map = {'am':'am', 'create':'destroy', 'kill':'make_life', 'worship':'deface',
                 'are':'are', 'be':'be', 'is':'is', 'i am':'i am not'}
-custom_map.update(reversed(i) for i in custom_map.items())
-print custom_map
-print custom_map['is']
+
+custom_map.update(reversed(i) for i in custom_map.items()) #inverse version of dict appened to it
+
 def anti_words(word):
     """Returns a list of antonym for the word"""
     if word in custom_map:
@@ -35,7 +35,6 @@ def anti_sentence(sentence):
     words = sentence.split()
     for word in words:
         yield choice(tuple(anti_words(word)))
-print list(anti_sentence('is'))
 
 if __name__ == '__main__':
     recognizer = speech.Recognizer()
